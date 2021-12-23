@@ -8,7 +8,6 @@ import ArrowLink from '@/components/links/ArrowLink';
 import ButtonLink from '@/components/links/ButtonLink';
 import CustomLink from '@/components/links/CustomLink';
 import UnstyledLink from '@/components/links/UnstyledLink';
-import NextImage from '@/components/NextImage';
 import Seo from '@/components/Seo';
 
 type Color = typeof colorList[number];
@@ -281,14 +280,6 @@ export default function ComponentsPage() {
                 <p className={clsx('!mt-1 text-sm', textColor)}>
                   Next Image with default props and skeleton animation
                 </p>
-                <NextImage
-                  useSkeleton
-                  className='w-32 md:w-40'
-                  src='/favicon/apple-icon-180x180.png'
-                  width='180'
-                  height='180'
-                  alt='Icon'
-                />
               </li>
             </ol>
           </div>

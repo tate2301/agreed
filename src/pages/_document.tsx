@@ -1,3 +1,4 @@
+// eslint-disable-next-line @next/next/no-document-import-in-page
 import Document, {
   DocumentContext,
   Head,
@@ -9,6 +10,7 @@ import Document, {
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
     const initialProps = await Document.getInitialProps(ctx);
+
     return { ...initialProps };
   }
 
@@ -24,8 +26,10 @@ class MyDocument extends Document {
             crossOrigin='anonymous'
           />
         </Head>
+
         <body>
           <Main />
+
           <NextScript />
         </body>
       </Html>

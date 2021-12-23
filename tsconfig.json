@@ -19,7 +19,14 @@
     },
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"],
+  "include": [
+    "./scripts",
+    "./test",
+    "./typechain",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "files": ["./hardhat.config.ts"],
   "moduleResolution": ["node_modules", ".next", "node"]
 }
