@@ -2,15 +2,15 @@
 // Before you begin editing, follow all comments with `STARTERCONF`,
 // to customize the default configuration.
 
+import Layout from '../components/layout/Layout';
 import Seo from '../components/Seo';
 
 export default function HomePage() {
   return (
-    <div>
-      {/* <Seo templateTitle='Home' /> */}
-      <Seo />
+    <Layout>
+      <Seo templateTitle='Home' />
 
       <main></main>
-    </div>
+    </Layout>
   );
 }

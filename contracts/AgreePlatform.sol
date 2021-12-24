@@ -34,7 +34,6 @@ contract AgreePlatform is ReentrancyGuard {
     uint256 tokenId;
     address payable sender;
     address payable owner;
-    address payable receiver;
     bool sent;
     bool signedByOwner;
     uint256 dealineToSign;
@@ -49,7 +48,6 @@ contract AgreePlatform is ReentrancyGuard {
     uint256 tokenId,
     address payable sender,
     address payable owner,
-    address payable receiver,
     bool sent,
     bool signedByOwner,
     uint256 dealineToSign,
@@ -60,13 +58,11 @@ contract AgreePlatform is ReentrancyGuard {
     address jobContract,
     uint256 tokenId,
     uint256 deadlineToSign,
-    uint256 signingPrice,
-    address receiver
+    uint256 signingPrice
   ) public payable nonReentrant {
     require(deadlineToSign > block.timestamp, "Deadline must be in the future");
     require(signingPrice >= 1, "Signing price must be at least 1 wei");
     require(msg.value == listingPrice, "Price must be equal to listing price");
-    require(receiver != address(0), "Receiver must be set");
 
     _itemIds.increment();
     uint256 itemId = _itemIds.current();
@@ -76,7 +72,6 @@ contract AgreePlatform is ReentrancyGuard {
       jobContract: jobContract,
       tokenId: tokenId,
       sender: payable(msg.sender),
-      receiver: payable(receiver),
       owner: payable(address(0)),
       sent: true,
       signedByOwner: false,
@@ -94,7 +89,6 @@ contract AgreePlatform is ReentrancyGuard {
       tokenId,
       payable(msg.sender),
       payable(address(0)),
-      payable(receiver),
       true,
       false,
       deadlineToSign,
@@ -129,6 +123,18 @@ contract AgreePlatform is ReentrancyGuard {
     payable(owner).transfer(signingPrice);
   }
 
+  function fetchJobItem(uint256 tokenId) public view returns (JobItem memory) {
+    JobItem memory item;
+    for (uint256 i = 0; i < _itemIds.current(); i++) {
+      if(idToJobItem[i + 1].tokenId == tokenId) {
+        item = idToJobItem[i + 1];
+        break;
+      }
+    }
+
+    return item;
+  }
+
   function fetchUnsignedJobs() public view returns (JobItem[] memory) {
     uint256 itemCount = _itemsSent.current();
     uint256 unsignedItems = _itemsSigned.current() - _itemsSigned.current();
@@ -145,23 +151,6 @@ contract AgreePlatform is ReentrancyGuard {
     }
 
     return unsigned_items;
-  }
-
-  function fetchUnsentJobs() public view returns (JobItem[] memory) {
-    uint256 itemCount = _itemsSent.current();
-    uint256 unsentItemsCount = _itemsSent.current() - _itemsSent.current();
-    uint256 currentIndex = 0;
-
-    JobItem[] memory unsent_items = new JobItem[](unsentItemsCount);
-    for (uint256 i = 0; i < itemCount; i++) {
-      if (idToJobItem[i + 1].sent == false) {
-        uint256 currentId = idToJobItem[i + 1].itemId;
-        JobItem storage currentItem = idToJobItem[currentId];
-        unsent_items[currentIndex] = currentItem;
-        currentIndex++;
-      }
-    }
-    return unsent_items;
   }
 
   function fetchMyOwnedJobs() public view returns (JobItem[] memory) {
@@ -205,31 +194,6 @@ contract AgreePlatform is ReentrancyGuard {
         JobItem storage currentItem = idToJobItem[currentId];
         myItems[currentIndex] = currentItem;
         currentIndex++;
-      }
-    }
-    return myItems;
-  }
-
-  function fetchMyPendingJobs() public view returns (JobItem[] memory) {
-    uint256 totalItemCount = _itemsSent.current();
-    uint256 itemCount = 0;
-    uint256 currentIndex = 0;
-
-    for (uint256 i = 0; i < totalItemCount; i++) {
-      if (idToJobItem[i + 1].receiver == address(msg.sender)) {
-        itemCount++;
-      }
-    }
-
-    JobItem[] memory myItems = new JobItem[](itemCount);
-    for (uint256 i = 0; i < itemCount; i++) {
-      if (idToJobItem[i + 1].receiver == msg.sender) {
-        if(idToJobItem[i + 1].signedByOwner == false) {
-          uint256 currentId = idToJobItem[i + 1].itemId;
-          JobItem storage currentItem = idToJobItem[currentId];
-          myItems[currentIndex] = currentItem;
-          currentIndex++;
-        }
       }
     }
     return myItems;
