@@ -12,7 +12,7 @@ contract AGREE is ERC721URIStorage {
   // address of the agree platform
   address contractAddress;
 
-  constructor(address platformAddress) ERC721("AGREED", "AGRE") {
+  constructor(address platformAddress) ERC721("AGREE", "AGRE") {
     contractAddress = platformAddress;
   }
 
