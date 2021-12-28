@@ -30,7 +30,6 @@ describe('AgreePlatform', function () {
       1,
       parseInt(dealineToSign),
       signingPrice,
-      await receiverAddress.getAddress(),
       {
         value: listingPrice,
       }
